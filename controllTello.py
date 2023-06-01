@@ -1,17 +1,23 @@
+# Controlling tello with wasd
+# References:
+# https://github.com/damiafuentes/DJITelloPy/blob/master/examples/manual-control-opencv.py
+from ultralytics import YOLO
+from ultralytics.yolo.v8.detect.predict import DetectionPredictor
 from djitellopy import Tello
-import cv2
+import cv2, math, time
 
 tello = Tello()
 tello.connect()
+model = YOLO("C:/Users/MC00202/Desktop/YOLOv8/best.pt")
 
 tello.streamon()
 frame_read = tello.get_frame_read()
-
 tello.takeoff()
 
 while True:
     img = frame_read.frame
-    cv2.imshow("drone", img)
+    # cv2.imshow("drone", img)
+    model.predict(img, show=True, save=True, conf=0.5)
 
     key = cv2.waitKey(1) & 0xff
     if key == 27: # ESC
